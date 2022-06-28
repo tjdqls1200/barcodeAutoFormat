@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'edu.sc.seis.launch4j' version '2.5.3'
+}
+
+group 'com.dental'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+launch4j {
+    mainClassName = 'com.dental.barcodes.Main'
+}
+
+dependencies {
+    implementation('org.seleniumhq.selenium:selenium-java:3.141.59')
+    implementation('io.github.bonigarcia:webdrivermanager:4.4.3')
+}
