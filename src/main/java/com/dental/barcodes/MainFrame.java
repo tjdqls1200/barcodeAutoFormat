@@ -96,22 +96,17 @@ public class MainFrame extends JFrame implements ActionListener {
             return;
         }
         try {
-            barcodeInputFormat(barcodeLine);
+            String udi = mainService.format(barcodeLine);
             if (values[3].length() > 15 && values[3].indexOf("21") > 5) {
                 showMessageDialog(null, "로트번호에 일련번호가 포함되었을 수 있습니다.", "알림창", WARNING_MESSAGE);
                 return;
             }
+            mainService.sendBarcode(udi);
             for (int i = 0; i < 4; i++)
                 fields[i].setText(values[i]);
+            barcodeInput.setText("");
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            showMessageDialog(null, "제대로 전송이 안 됐을 수 있습니다.\n" + ex.getMessage(), "알림창", WARNING_MESSAGE);
         }
-    }
-
-    private void barcodeInputFormat(String barcodeLine) throws Exception {
-        String udi = mainService.format(barcodeLine);
-        barcodeInput.setText("");
-        mainService.sendBarcode(udi);
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
 }

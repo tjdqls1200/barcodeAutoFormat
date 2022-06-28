@@ -35,6 +35,7 @@ public class MainService {
         WebElement barcode = driver.findElement(By.id("barcode"));
         barcode.clear();
         barcode.sendKeys(udi + Keys.ENTER);
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
 
 
@@ -62,13 +63,12 @@ public class MainService {
                 return manageCode.length();
             }
             case "30" : {
+                sb.append("(30)").append(barcodeLine.charAt(2));
                 if (barcodeLine.charAt(4) == '1' && barcodeLine.charAt(5) == '0') {
-                    sb.append("(30)").append(barcodeLine.charAt(2)).append(barcodeLine.charAt(3));
+                    sb.append(barcodeLine.charAt(3));
                     return 2;
-                } else if (barcodeLine.charAt(3) == '1' && barcodeLine.charAt(4) == '0') {
-                    sb.append("(30)").append(barcodeLine.charAt(2));
-                    return 1;
                 }
+                return 1;
             }
             case "11": {
                 String manufacturingYear = barcodeLine.substring(2, 8);
@@ -99,14 +99,13 @@ public class MainService {
 
     private String lotNumberCheck(String barcodeLine, String lotNumber) {
         int lastIndex = barcodeLine.length() - 1;
-        if (lastIndex > 7 && barcodeLine.charAt(lastIndex - 7) == '1') {
-            if (barcodeLine.charAt(lastIndex - 6) == '7' || barcodeLine.charAt(lastIndex - 6) == '1') {
-                if (lastIndex > 15 && barcodeLine.charAt(lastIndex - 15) == '1' &&
-                        (barcodeLine.charAt(lastIndex - 14) == '1' || barcodeLine.charAt(lastIndex - 14) == '7')) {
-                    lotNumber = barcodeLine.substring(2, lastIndex - 15);
-                } else {
-                    lotNumber = barcodeLine.substring(2, lastIndex - 7);
-                }
+        if (lastIndex > 15 && barcodeLine.charAt(lastIndex - 15) == '1') {
+            if (barcodeLine.charAt(lastIndex - 14) == '1' || barcodeLine.charAt(lastIndex - 14) == '7') {
+                lotNumber = barcodeLine.substring(2, lastIndex - 15);
+            }
+        } else if (lastIndex > 7 && barcodeLine.charAt(lastIndex - 7) == '1'){
+            if (barcodeLine.charAt(lastIndex - 6) == '1' || barcodeLine.charAt(lastIndex - 6) == '7') {
+                lotNumber = barcodeLine.substring(2, lastIndex - 7);
             }
         }
         return lotNumber;
